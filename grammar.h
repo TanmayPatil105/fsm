@@ -32,6 +32,7 @@ void            grammar_create_rule       (struct Grammar *grammar,
                                            char           *production);
 char            grammar_add_terminal      (struct Grammar *grammar,
                                            char            c);
+void            grammar_optimize          (struct Grammar *grammar);
 void            grammar_print             (struct Grammar *grammar);
 void            grammar_free              (struct Grammar *grammar);
 

@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+static void grammar_rule_free (struct GrammarRule *rule);
+
 struct Grammar *
 grammar_new (void)
 {
@@ -97,7 +99,7 @@ grammar_add_terminal (struct Grammar *grammar,
 
   /* we don't have the terminal */
   grammar->terminals = realloc (grammar->terminals,
-                            sizeof (char) * (grammar->n_terminals + 1));
+                                sizeof (char) * (grammar->n_terminals + 1));
 
   grammar->terminals[grammar->n_terminals++] = c;
 
@@ -108,7 +110,49 @@ grammar_add_terminal (struct Grammar *grammar,
   return symbol;
 }
 
+static void
+grammar_rule_add_prod (struct GrammarRule *rule,
+                       char               *production)
+{
+  rule->productions = realloc (rule->productions,
+                               sizeof (char) * (rule->n_productions + 1));
+
+  rule->productions[rule->n_productions++] = strdup (production);
+}
+
 void
+grammar_optimize (struct Grammar *grammar)
+{
+  for (int i = 0; i < grammar->n_rules; i++)
+    {
+      struct GrammarRule *rule1;
+
+      rule1 = grammar->rules[i];
+
+      if (rule1 == NULL)
+        continue;
+
+      for (int j = i + 1; j < grammar->n_rules; j++)
+        {
+          struct GrammarRule *rule2;
+
+          rule2 = grammar->rules[j];
+
+          if (rule2 != NULL
+              && rule1->symbol == rule2->symbol)
+            {
+              grammar_rule_add_prod (rule1,
+                                     rule2->productions[0]);
+
+              grammar_rule_free (rule2);
+
+              grammar->rules[j] = NULL;
+            }
+        }
+    }
+}
+
+static void
 grammar_rule_print (struct GrammarRule *rule)
 {
   printf ("%c -> ", rule->symbol);
@@ -129,7 +173,8 @@ grammar_print (struct Grammar *grammar)
 
   for (; --i >= 0; )
     {
-      grammar_rule_print (grammar->rules[i]);
+      if (grammar->rules[i])
+        grammar_rule_print (grammar->rules[i]);
     }
 }
 
@@ -141,6 +186,8 @@ grammar_rule_free (struct GrammarRule *rule)
       if (rule->productions[rule->n_productions] != NULL)
         free (rule->productions[rule->n_productions]);
     }
+
+  rule->n_productions = 0;
 }
 
 void

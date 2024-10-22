@@ -19,6 +19,8 @@ main (int   argc,
 
   grammar = parser_get_grammar (argv[1]);
 
+  grammar_optimize (grammar);
+
   grammar_print (grammar);
 
   /* cleanup */
