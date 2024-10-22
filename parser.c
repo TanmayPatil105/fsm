@@ -54,6 +54,8 @@ learn_grammar (struct Grammar *grammar,
         prod[0] = stack_pop (char_stack);
         grammar_create_rule (grammar, symbol, prod);
 
+        learn_grammar (grammar, op_stack, char_stack);
+
         prod[0] = stack_pop (char_stack);
         grammar_create_rule (grammar, symbol, prod);
 
@@ -88,7 +90,7 @@ learn_grammar (struct Grammar *grammar,
         grammar_create_rule (grammar, symbol, prod);
         stack_push (char_stack, symbol);
 
-        break;
+        return;
 			default:
         utils_throw_error ("learn_grammar: unreachable code");
     }
