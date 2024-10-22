@@ -90,13 +90,24 @@ learn_grammar (struct Grammar *grammar,
         grammar_create_rule (grammar, symbol, prod);
         stack_push (char_stack, symbol);
 
-        return;
+        break;
 			default:
         utils_throw_error ("learn_grammar: unreachable code");
     }
 
   if (!stack_is_empty (char_stack))
     learn_grammar (grammar, op_stack, char_stack);
+}
+
+static void
+create_start_production (struct Grammar *grammar,
+                         char            c)
+{
+  char prod[2] = { '\0' };
+
+  prod[0] = c;
+
+  grammar_create_rule (grammar, grammar->start, prod);
 }
 
 struct Grammar *
@@ -176,6 +187,11 @@ parser_get_grammar (char *regex)
   //stack_dump (char_stack);
 
   learn_grammar (grammar, op_stack, char_stack);
+
+  if (stack_is_empty(char_stack))
+    utils_throw_error ("grammar: error while create grammar");
+
+  create_start_production (grammar, stack_pop (char_stack));
 
   return grammar;
 }
