@@ -94,7 +94,7 @@ learn_grammar (struct Grammar *grammar,
         stack_push (char_stack, symbol);
 
         break;
-			default:
+      default:
         utils_throw_error ("learn_grammar: unreachable code");
     }
 
