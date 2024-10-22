@@ -10,6 +10,9 @@
 #include <string.h>
 #include <ctype.h>
 
+
+#define EPSILON "ε"
+
 static bool
 isbracket (char c)
 {
@@ -68,7 +71,7 @@ learn_grammar (struct Grammar *grammar,
         prod[1] = symbol;
         grammar_create_rule (grammar, symbol, prod);
 
-        grammar_create_rule (grammar, symbol, "$");
+        grammar_create_rule (grammar, symbol, EPSILON);
 
         stack_push (char_stack, symbol);
         break;
