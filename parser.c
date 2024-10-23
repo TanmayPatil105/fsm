@@ -143,7 +143,7 @@ parser_get_grammar (char *regex)
         {
           if (regex[i] == ')')
             {
-             br_count++;
+              br_count++;
             }
           else
             {
@@ -152,7 +152,7 @@ parser_get_grammar (char *regex)
 
           stack_push (op_stack, regex[i]);
 
-          last = '0';
+          last = last == '1' ? '1': '0';
         }
       else if (islower (regex[i]))
         {

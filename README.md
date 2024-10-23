@@ -5,6 +5,7 @@ Takes regex as input and then creates an automate to handle user input.
 ### Example
 
 ```bash
+$ ./fsm "(a|b)*|((ab)d|(c+))"
 S -> G
 K -> AK
 J -> I | K
